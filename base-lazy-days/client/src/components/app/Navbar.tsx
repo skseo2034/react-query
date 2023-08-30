@@ -11,14 +11,14 @@ const Links = ['Treatments', 'Staff', 'Calendar'];
 const NavLink = ({ to, children }: { to: string; children: ReactNode }) => (
 	<ChakraLink
 		as={ReactRouterLink}
-		/*px={2}
+		px={2}
 		py={1}
 		rounded="md"
 		color="olive.200"
 		_hover={{
 			textDecoration: 'none',
 			color: 'olive.500',
-		}}*/
+		}}
 		to={to}
 	>
 		{children}

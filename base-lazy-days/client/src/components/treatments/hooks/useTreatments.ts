@@ -2,7 +2,7 @@ import { axiosInstance } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
 import { useCustomToast } from '../../app/hooks/useCustomToast';
 import { Treatment } from '../../../../../shared/types';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
 // for when we need a query function for useQuery
@@ -23,3 +23,10 @@ export function useTreatments(): Treatment[] {
 
 	return data as Treatment[];
 }
+
+export const usePrefetchTreatments = () => {
+	const queryClient = useQueryClient();
+	queryClient.prefetchQuery([queryKeys.treatments], getTreatments).then(r => {
+		// dummy
+	});
+};

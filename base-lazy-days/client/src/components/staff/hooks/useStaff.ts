@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 
 import { axiosInstance } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
@@ -22,14 +22,21 @@ export function useStaff(): UseStaff {
 	// for filtering staff by treatment
 	const [filter, setFilter] = useState('all');
 
-	// TODO: get data from server via useQuery
+	const selectFn = useCallback(
+		(data: Staff[]) => {
+			console.log('seo4 >>>>>>>>>>>>>>>>', data);
+			return filterByTreatment(data, filter);
+		},
+		[filter]
+	);
+
 	const fallback = [] as any[];
 
 	const { data: staff = fallback, isLoading } = useQuery([queryKeys.staff], getStaff, {
-		/*onError: error => {
-			const title = error instanceof Error ? error.message : 'error connecting to the server';
-		},*/
+		select: filter !== 'all' ? selectFn : undefined,
 	});
+
+	console.log('useStaff >>>>> ', staff);
 
 	return { staff, filter, setFilter };
 }

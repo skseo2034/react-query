@@ -20,6 +20,13 @@ export const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
 			onError: queryErrorHandler,
+			// 전역설정. 아래와 같은 설정은 데이터의 변화가 거의 없다는 가정하에 refetching 을 제한하는 옵션
+			// 권장하지 않는다. 사용자가 최신데이터를 보지 못할 가능성이 잇다.
+			staleTime: 60000, // 10 minutes
+			cacheTime: 90000, // 15 minutes 통상은 statleTime 보다 길어야 한다. 기본 5분이다. 왜냐면 staleTime 보다 적어면 다시 불러올때 보여줄 데이터가 없다.
+			refetchOnMount: false,
+			refetchOnWindowFocus: false,
+			refetchOnReconnect: false,
 		},
 	},
 });

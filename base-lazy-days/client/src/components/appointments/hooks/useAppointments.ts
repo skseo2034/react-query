@@ -9,6 +9,12 @@ import { getAvailableAppointments } from '../utils';
 import { getMonthYearDetails, getNewMonthYear, MonthYear } from './monthYear';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
+// common options for both useQuery and prefetchQuery
+const commonOptions = {
+	staleTime: 0, // 즉시만료
+	cacheTime: 30000, // 5 minutes
+};
+
 // for useQuery call
 async function getAppointments(year: string, month: string): Promise<AppointmentDateMap> {
 	const { data } = await axiosInstance.get(`/appointments/${year}/${month}`);
@@ -74,8 +80,10 @@ export function useAppointments(): UseAppointments {
 		console.log('useAppointments useEffect running');
 		const nextMonthYear = getNewMonthYear(monthYear, 1);
 		queryClient
-			.prefetchQuery([queryKeys.appointments, nextMonthYear.year, nextMonthYear.month], () =>
-				getAppointments(nextMonthYear.year, nextMonthYear.month)
+			.prefetchQuery(
+				[queryKeys.appointments, nextMonthYear.year, nextMonthYear.month],
+				() => getAppointments(nextMonthYear.year, nextMonthYear.month),
+				commonOptions
 			)
 			.then(r => {
 				//dummy
@@ -95,6 +103,10 @@ export function useAppointments(): UseAppointments {
 		() => getAppointments(monthYear.year, monthYear.month),
 		{
 			select: showAll ? undefined : selectFn,
+			...commonOptions,
+			refetchOnMount: true,
+			refetchOnWindowFocus: true,
+			refetchOnReconnect: true,
 		}
 	);
 

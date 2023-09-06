@@ -107,6 +107,7 @@ export function useAppointments(): UseAppointments {
 			refetchOnMount: true,
 			refetchOnWindowFocus: true,
 			refetchOnReconnect: true,
+			refetchInterval: 60000, // 현재는 1분으로 수정, 1초(6000) 매초 마다 리 패치; 운영시에는 추천하지 않음.(매초 마다 필요하지는 않는다.)
 		}
 	);
 

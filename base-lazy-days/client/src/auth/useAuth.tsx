@@ -15,12 +15,12 @@ type UserResponse = { user: User };
 type ErrorResponse = { message: string };
 type AuthResponseType = UserResponse | ErrorResponse;
 
-export function useAuth(): UseAuth {
+export const useAuth = (): UseAuth => {
 	const SERVER_ERROR = 'There was an error contacting the server.';
 	const toast = useCustomToast();
 	const { clearUser, updateUser } = useUser();
 
-	async function authServerCall(urlEndpoint: string, email: string, password: string): Promise<void> {
+	const authServerCall = async (urlEndpoint: string, email: string, password: string): Promise<void> => {
 		try {
 			const { data, status }: AxiosResponse<AuthResponseType> = await axiosInstance({
 				url: urlEndpoint,
@@ -29,12 +29,13 @@ export function useAuth(): UseAuth {
 				headers: { 'Content-Type': 'application/json' },
 			});
 
+			console.log('authServerCall status >>> ', status);
 			if (status === 400) {
 				const title = 'message' in data ? data.message : 'Unauthorized';
 				toast({ title, status: 'warning' });
 				return;
 			}
-
+			console.log('authServerCall data >>> ', data);
 			if ('user' in data && 'token' in data.user) {
 				toast({
 					title: `Logged in as ${data.user.email}`,
@@ -54,14 +55,15 @@ export function useAuth(): UseAuth {
 				status: 'error',
 			});
 		}
-	}
+	};
 
-	async function signin(email: string, password: string): Promise<void> {
-		authServerCall('/signin', email, password);
-	}
-	async function signup(email: string, password: string): Promise<void> {
-		authServerCall('/user', email, password);
-	}
+	const signin = async (email: string, password: string): Promise<void> => {
+		await authServerCall('/signin', email, password);
+	};
+
+	const signup = async (email: string, password: string): Promise<void> => {
+		await authServerCall('/user', email, password);
+	};
 
 	function signout(): void {
 		// clear user from stored user data
@@ -78,4 +80,4 @@ export function useAuth(): UseAuth {
 		signup,
 		signout,
 	};
-}
+};

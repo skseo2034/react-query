@@ -10,23 +10,27 @@ import {
 	Input,
 	Stack,
 } from '@chakra-ui/react';
-import { ReactElement, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { ReactElement, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../../auth/useAuth';
 import { useUser } from './hooks/useUser';
 
 // eslint-disable-next-line max-lines-per-function
 export function Signin(): ReactElement {
+	const navigate = useNavigate();
 	const [email, setEmail] = useState('test');
 	const [password, setPassword] = useState('test');
 	const [dirty, setDirty] = useState({ email: false, password: false });
 	const auth = useAuth();
 	const { user } = useUser();
 
-	if (user) {
-		return <Link to={`/user/${user.id}`} />;
-	}
+	console.log('sign running ');
+	useEffect(() => {
+		if (user) {
+			navigate(`/user/${user.id}`);
+		}
+	}, [navigate, user]);
 
 	return (
 		<>

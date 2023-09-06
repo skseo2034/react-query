@@ -4,17 +4,17 @@ import { axiosInstance, getJWTHeader } from '../../../axiosInstance';
 import { queryKeys } from '../../../react-query/constants';
 import { clearStoredUser, getStoredUser, setStoredUser } from '../../../user-storage';
 import { User } from '../../../../../shared/types';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-// async function getUser(user: User | null): Promise<User | null> {
-//   if (!user) return null;
-//   const { data }: AxiosResponse<{ user: User }> = await axiosInstance.get(
-//     `/user/${user.id}`,
-//     {
-//       headers: getJWTHeader(user),
-//     },
-//   );
-//   return data.user;
-// }
+const getUser = async (user: User | null): Promise<User | null> => {
+	console.log('getUser running ');
+	if (!user) return null;
+	console.log('getUser getJWTHeader(user)>>>>> ', getJWTHeader(user));
+	const { data }: AxiosResponse<{ user: User }> = await axiosInstance.get(`/user/${user.id}`, {
+		headers: getJWTHeader(user),
+	});
+	return data.user;
+};
 
 interface UseUser {
 	user: User | null;
@@ -23,18 +23,39 @@ interface UseUser {
 }
 
 export function useUser(): UseUser {
-	// TODO: call useQuery to update user data from server
-	const user = null;
+	console.log('useUser running >>>>>>>>>>>>>>>>>');
+	const queryClient = useQueryClient();
+	const { data: user } = useQuery<any>([queryKeys.user], () => getUser(user), {
+		initialData: getStoredUser,
+		// onSuccess 함수는 쿼리함수(() => getUser(user)) 에서 반환된 데이터 나 setQueryData 에서 데이터를 가져오는 함수이다.
+		/*onSuccess: (received: User | null) => {
+			console.log('received >>>>>>>>>>>>>>>>>', received);
+			if (!received) {
+				clearStoredUser();
+			} else {
+				setStoredUser(received);
+			}
+		},*/
+	});
+
+	if (!user) {
+		clearStoredUser();
+	} else {
+		setStoredUser(user);
+	}
+	console.log('useUser data >>>>>>>>>>>>>>>>>', getJWTHeader(user));
+	//const user = null;
 
 	// meant to be called from useAuth
-	function updateUser(newUser: User): void {
-		// TODO: update the user in the query cache
-	}
+	const updateUser = (newUser: User): void => {
+		queryClient.setQueryData([queryKeys.user], newUser);
+	};
 
 	// meant to be called from useAuth
-	function clearUser() {
-		// TODO: reset user to null in query cache
-	}
+	const clearUser = () => {
+		queryClient.setQueryData([queryKeys.user], null);
+		queryClient.removeQueries(['user-appointments']);
+	};
 
 	return { user, updateUser, clearUser };
 }

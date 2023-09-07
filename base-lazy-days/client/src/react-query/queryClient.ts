@@ -28,6 +28,9 @@ export const queryClient = new QueryClient({
 			refetchOnWindowFocus: false,
 			refetchOnReconnect: false,
 		},
+		mutations: {
+			onError: queryErrorHandler,
+		},
 	},
 });
 
@@ -45,12 +48,12 @@ export const queryClient = new QueryClient({
 		},
 	},
 	queryCache: new QueryCache({
-		onError: (error, query: any) => {
-			if (query.meta.errorMessage) {
-				queryErrorHandler(query.meta.errorMessage);
-			}
+		onError: onError: queryErrorHandler,
 		},
 	}),
+	mutationCache: new MutationCache({
+        onError: queryErrorHandler,
+      }),
 });
 */
 

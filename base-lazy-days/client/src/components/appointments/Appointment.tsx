@@ -39,6 +39,27 @@ export function Appointment({ appointmentData }: AppointmentProps): ReactElement
 			cursor: 'pointer',
 		};
 	}
+	/*const onAppointmentClick = () => {
+		console.log('seo >>>>>>>>>>>>>', clickable, user);
+		if (clickable) {
+			if (user) {
+				reserveAppointment(appointmentData);
+			}
+			hoverCss = {
+				transform: 'translateY(-1px)',
+				boxShadow: 'md',
+				cursor: 'pointer',
+			};
+		}
+	};*/
+	/*if (clickable) {
+		onAppointmentClick = user ? () => reserveAppointment(appointmentData) : undefined;
+		hoverCss = {
+			transform: 'translateY(-1px)',
+			boxShadow: 'md',
+			cursor: 'pointer',
+		};
+	}*/
 
 	const appointmentHour = dayjs(appointmentData.dateTime).format('h a');
 	return (

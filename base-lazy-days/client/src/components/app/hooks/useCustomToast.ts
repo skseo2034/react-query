@@ -18,5 +18,9 @@ export function useCustomToast(): UseCustomToast {
 		isClosable: true,
 		variant: 'subtle',
 		position: 'bottom',
+		/*containerStyle: {
+			width: '800px',
+			maxWidth: '100%',
+		},*/
 	});
 }

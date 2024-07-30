@@ -14,8 +14,6 @@ const getUser = async (user: User | null, signal: AbortSignal): Promise<User | n
 	const { data }: AxiosResponse<{ user: User }> = await axiosInstance.get(`/user/${user.id}`, {
 		headers: getJWTHeader(user),
 	});
-
-	console.log('getUser running data.user', data.user);
 	return data.user;
 };
 
@@ -46,7 +44,7 @@ export function useUser(): UseUser {
 	} else {
 		setStoredUser(user);
 	}*/
-	//console.log('useUser data >>>>>>>>>>>>>>>>>', getJWTHeader(user));
+	console.log('useUser data >>>>>>>>>>>>>>>>>', getJWTHeader(user));
 	//const user = null;
 
 	// meant to be called from useAuth
